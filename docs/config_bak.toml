@@ -1,0 +1,81 @@
+# CC-Connect 配置文件
+# 界面语言: en / zh / zh-tw / ja / es
+language = "zh"
+
+[database]
+dsn = "hw3:Y8CVZTCbjqRYG#@tcp(123.57.78.161:3309)/tauri_agent?charset=utf8mb4&parseTime=true"
+
+
+# WebUI 服务器 (Vibe Coding)
+[webui]
+enabled = true
+port = 9830
+cors_origins = ["*"]
+# token = ""  # 留空则不需要认证
+
+# Management API (前端管理后台使用)
+[management]
+enabled = true
+port = 9820
+cors_origins = ["*"]
+# token = ""  # 留空则不需要认证
+
+# =============================================================================
+# 项目 1: AstrBot 机器人
+# =============================================================================
+[[projects]]
+name = "AstrBot机器人"
+
+[projects.agent]
+type = "claudecode"
+
+[projects.agent.options]
+work_dir = "/Users/ywwl/Documents/code/PycharmProjects/astrBot_hw"
+mode = "auto"
+
+[[projects.platforms]]
+type = "feishu"
+
+[projects.platforms.options]
+app_id = "cli_a94a763a91b99cee"
+app_secret = "qmUo6ElxY5BmNl27EbuxBdUYfqbhMSEa"
+
+# =============================================================================
+# 项目 2: 用户中心
+# =============================================================================
+[[projects]]
+name = "用户中心"
+
+[projects.agent]
+type = "claudecode"
+
+[projects.agent.options]
+work_dir = "/Users/ywwl/Documents/code/ideaWorkspace/cia-user-center"
+mode = "auto"
+
+[[projects.platforms]]
+type = "feishu"
+
+[projects.platforms.options]
+app_id = "cli_a94a763a91b99cee"
+app_secret = "qmUo6ElxY5BmNl27EbuxBdUYfqbhMSEa"
+
+# =============================================================================
+# 项目 3: 任务中心
+# =============================================================================
+[[projects]]
+name = "任务中心"
+
+[projects.agent]
+type = "claudecode"
+
+[projects.agent.options]
+work_dir = "/Users/ywwl/Documents/code/ideaWorkspace/task_bpm_center"
+mode = "auto"
+
+[[projects.platforms]]
+type = "feishu"
+
+[projects.platforms.options]
+app_id = "cli_a94a763a91b99cee"
+app_secret = "qmUo6ElxY5BmNl27EbuxBdUYfqbhMSEa"
