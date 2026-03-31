@@ -1,4 +1,4 @@
-<p align="center">
+不是<p align="center">
   <img src="./docs/images/banner.svg" alt="CC-Connect Banner" width="800"/>
 </p>
 
@@ -72,6 +72,13 @@ npm run dev
 - **Richer platforms** — e.g. **Discord** `@everyone` / `@here`, **Telegram** voice-style replies, **Feishu** fixes for reply threading and async dispatch.
 
 ---
+## 本地启动
+```
+go build -o /tmp/cc-connect-test ./cmd/cc-connect && /tmp/cc-connect-test
+```
+配置文件:      
+~/.cc-connect/config.toml
+
 
 ## 打包
 `go build -o /tmp/cc-connect-test ./cmd/cc-connect`
