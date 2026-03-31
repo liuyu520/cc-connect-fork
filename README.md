@@ -73,6 +73,16 @@ npm run dev
 
 ---
 
+## 本地启动
+```
+go build -o /tmp/cc-connect-test ./cmd/cc-connect && /tmp/cc-connect-test
+```
+
+配置文件:       
+~/.cc-connect/config.toml
+
+
+
 ## 打包
 `go build -o /tmp/cc-connect-test ./cmd/cc-connect`
 `/tmp/cc-connect-test`
