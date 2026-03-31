@@ -204,6 +204,7 @@ func (e *Engine) initBuiltinCommands() {
 		{names: []string{"delete", "del", "rm"}, id: "delete", handler: e.cmdDelete},
 		{names: []string{"bind"}, id: "bind", handler: e.cmdBind},
 		{names: []string{"search", "find"}, id: "search", handler: e.cmdSearch},
+		{names: []string{"retry", "redo"}, id: "retry", handler: e.cmdRetry},
 		{names: []string{"shell", "sh", "exec", "run"}, id: "shell", handler: func(p Platform, msg *Message, _ []string) {
 			e.cmdShell(p, msg, msg.Content)
 		}, privileged: true},

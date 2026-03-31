@@ -15,7 +15,7 @@ import (
 )
 
 const maxPlatformMessageLen = 4000
-const maxQueuedMessages = 5 // cap queued messages to bound memory usage
+const defaultMaxQueuedMessages = 5 // default cap for queued messages
 
 const (
 	defaultThinkingMaxLen = 300
@@ -212,6 +212,9 @@ type Engine struct {
 	// PatrolScheduler for recording IM user activity (nil if patrol not configured)
 	patrolScheduler *PatrolScheduler
 
+	// Maximum number of queued messages when session is busy (configurable, default 5)
+	maxQueuedMessages int
+
 	// External platforms managed by ProjectRouter (Start/Stop skipped)
 	externalPlatforms map[Platform]bool
 
@@ -307,6 +310,7 @@ func NewEngine(name string, ag Agent, platforms []Platform, sessionStorePath str
 		eventIdleTimeout:      defaultEventIdleTimeout,
 		showContextIndicator:  true,
 		showToolProcess:       true,
+		maxQueuedMessages:     defaultMaxQueuedMessages,
 	}
 
 	if ag != nil {
@@ -446,6 +450,14 @@ func (e *Engine) SetShowToolProcess(show bool) {
 // SetPatrolScheduler injects the patrol scheduler for recording IM user activity.
 func (e *Engine) SetPatrolScheduler(ps *PatrolScheduler) {
 	e.patrolScheduler = ps
+}
+
+// SetMaxQueuedMessages sets the maximum number of messages that can be queued
+// when the session is busy. Messages beyond this limit are rejected.
+func (e *Engine) SetMaxQueuedMessages(n int) {
+	if n > 0 {
+		e.maxQueuedMessages = n
+	}
 }
 
 // SetInjectSender controls whether sender identity (platform and user ID) is

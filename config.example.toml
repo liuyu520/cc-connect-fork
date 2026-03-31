@@ -554,6 +554,8 @@ name = "my-backend"
 #                                   # 当 agent 回答完成时发送「->->->-> session complete」通知（默认 true 开启）
 # show_tool_process = false         # Show tool_use/tool_result on IM platforms (default: true / show)
 #                                   # 在 IM 端显示工具调用过程（默认 true 显示）
+# max_queued_messages = 5           # Max messages queued when session is busy (default: 5)
+#                                   # 会话忙碌时最大排队消息数（默认 5）
 # quiet = true  # Override global quiet for this project / 覆盖全局静默模式
 # disabled_commands = ["restart", "upgrade", "cron"]  # Disable specific commands for this project
 #                                                     # 禁用该项目的指定命令

@@ -225,6 +225,8 @@ type ProjectConfig struct {
 	SessionCompleteNotify *bool       `toml:"session_complete_notify,omitempty"`
 	// ShowToolProcess: nil/true = show tool_use/tool_result messages on IM; false = hide.
 	ShowToolProcess      *bool        `toml:"show_tool_process,omitempty"`
+	// MaxQueuedMessages: max messages queued when session is busy; nil = default (5).
+	MaxQueuedMessages    *int         `toml:"max_queued_messages,omitempty"`
 	Quiet                *bool        `toml:"quiet,omitempty"`             // project-level quiet mode; overrides global setting
 	InjectSender         *bool        `toml:"inject_sender,omitempty"`     // prepend sender identity (platform + user ID) to each message sent to the agent
 	DisabledCommands     []string     `toml:"disabled_commands,omitempty"` // commands to disable for this project (e.g. ["restart", "upgrade"])

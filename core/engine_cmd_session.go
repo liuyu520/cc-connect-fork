@@ -607,6 +607,45 @@ func formatUsageBlock(lang Language, window *UsageWindow) string {
 	return sb.String()
 }
 
+// cmdRetry 重新发送当前会话中最后一条用户消息到 agent。
+func (e *Engine) cmdRetry(p Platform, msg *Message, _ []string) {
+	session := e.sessions.GetOrCreateActive(msg.SessionKey)
+
+	// 从历史记录中找到最后一条 user 消息
+	history := session.GetHistory(0)
+	var lastUserMsg string
+	for i := len(history) - 1; i >= 0; i-- {
+		if history[i].Role == "user" {
+			lastUserMsg = history[i].Content
+			break
+		}
+	}
+
+	if lastUserMsg == "" {
+		e.reply(p, msg.ReplyCtx, e.i18n.T(MsgRetryNoMessage))
+		return
+	}
+
+	// 截断显示（避免提示消息过长）
+	preview := lastUserMsg
+	if len(preview) > 100 {
+		preview = preview[:100] + "..."
+	}
+	e.reply(p, msg.ReplyCtx, e.i18n.Tf(MsgRetryResending, preview))
+
+	// 构造一条新消息，内容为最后一条用户消息，走正常处理流程
+	retryMsg := *msg
+	retryMsg.Content = lastUserMsg
+
+	// 重新获取 session 并尝试锁定
+	session = e.sessions.GetOrCreateActive(msg.SessionKey)
+	if !session.TryLock() {
+		e.reply(p, msg.ReplyCtx, e.i18n.T(MsgPreviousProcessing))
+		return
+	}
+	go e.processInteractiveMessage(p, &retryMsg, session)
+}
+
 func (e *Engine) cmdHistory(p Platform, msg *Message, args []string) {
 	if len(args) == 0 && supportsCards(p) {
 		e.replyWithCard(p, msg.ReplyCtx, e.renderHistoryCard(msg.SessionKey))

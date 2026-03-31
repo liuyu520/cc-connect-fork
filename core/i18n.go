@@ -536,6 +536,11 @@ const (
 	MsgProjectHelp     MsgKey = "project.help"
 
 	MsgPatrolIdle MsgKey = "patrol_idle"
+
+	MsgAgentCrashed    MsgKey = "agent_crashed"
+	MsgRetryNoMessage  MsgKey = "retry_no_message"
+	MsgRetryResending  MsgKey = "retry_resending"
+	MsgToolProgress    MsgKey = "tool_progress"
 )
 
 var messages = map[MsgKey]map[Language]string{
@@ -3577,6 +3582,34 @@ var messages = map[MsgKey]map[Language]string{
 		LangTraditionalChinese: "我目前閒置中，有什麼需要幫助的嗎？",
 		LangJapanese:           "現在アイドル状態です。何かお手伝いできることはありますか？",
 		LangSpanish:            "Estoy libre ahora. ¿Hay algo en lo que pueda ayudar?",
+	},
+	MsgAgentCrashed: {
+		LangEnglish:            "⚠️ Agent process exited unexpectedly. Send a new message to automatically restart.",
+		LangChinese:            "⚠️ Agent 进程意外退出。发送新消息即可自动重新连接。",
+		LangTraditionalChinese: "⚠️ Agent 程序意外結束。發送新訊息即可自動重新連接。",
+		LangJapanese:           "⚠️ エージェントプロセスが予期せず終了しました。新しいメッセージを送信すると自動的に再接続します。",
+		LangSpanish:            "⚠️ El proceso del agente se cerró inesperadamente. Envía un nuevo mensaje para reconectar automáticamente.",
+	},
+	MsgRetryNoMessage: {
+		LangEnglish:            "No previous message to retry.",
+		LangChinese:            "没有可重试的历史消息。",
+		LangTraditionalChinese: "沒有可重試的歷史訊息。",
+		LangJapanese:           "再試行するメッセージがありません。",
+		LangSpanish:            "No hay mensaje anterior para reintentar.",
+	},
+	MsgRetryResending: {
+		LangEnglish:            "🔄 Retrying: %s",
+		LangChinese:            "🔄 重试中: %s",
+		LangTraditionalChinese: "🔄 重試中: %s",
+		LangJapanese:           "🔄 再試行中: %s",
+		LangSpanish:            "🔄 Reintentando: %s",
+	},
+	MsgToolProgress: {
+		LangEnglish:            "⏳ Still running %s...",
+		LangChinese:            "⏳ %s 仍在执行中...",
+		LangTraditionalChinese: "⏳ %s 仍在執行中...",
+		LangJapanese:           "⏳ %s を実行中...",
+		LangSpanish:            "⏳ Aún ejecutando %s...",
 	},
 }
 

@@ -91,7 +91,7 @@ func (e *Engine) queueMessageForBusySession(p Platform, msg *Message, interactiv
 	// EventResult that never arrives. Instead, the event loop sends the
 	// message after the current turn's EventResult is received.
 	state.mu.Lock()
-	if len(state.pendingMessages) >= maxQueuedMessages {
+	if len(state.pendingMessages) >= e.maxQueuedMessages {
 		state.mu.Unlock()
 		return false // fall back to "previous processing" reply
 	}

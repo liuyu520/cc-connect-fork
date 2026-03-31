@@ -42,6 +42,20 @@ func (e *Engine) processInteractiveEvents(state *interactiveState, session *Sess
 	}
 
 	events := state.agentSession.Events()
+
+	// 长任务进度心跳：工具调用超过 30 秒时通知用户
+	var toolProgressTimer *time.Timer
+	var toolProgressCh <-chan time.Time
+	var currentToolName string
+	toolProgressTimeout := 30 * time.Second
+	stopToolProgress := func() {
+		if toolProgressTimer != nil {
+			toolProgressTimer.Stop()
+			toolProgressTimer = nil
+			toolProgressCh = nil
+		}
+	}
+	defer stopToolProgress()
 	for {
 		var event Event
 		var ok bool
@@ -70,6 +84,25 @@ func (e *Engine) processInteractiveEvents(state *interactiveState, session *Sess
 				e.send(p, replyCtx, fmt.Sprintf(e.i18n.T(MsgError), err))
 				return
 			}
+			continue
+		case <-toolProgressCh:
+			// 工具调用超过 30 秒，发送进度心跳通知用户
+			toolName := currentToolName
+			if toolName == "" {
+				toolName = "tool"
+			}
+			e.quietMu.RLock()
+			globalQuiet := e.quiet
+			e.quietMu.RUnlock()
+			state.mu.Lock()
+			sessionQuiet := state.quiet
+			progressP := state.platform
+			state.mu.Unlock()
+			if !globalQuiet && !sessionQuiet && e.showToolProcess {
+				e.send(progressP, replyCtx, fmt.Sprintf(e.i18n.T(MsgToolProgress), toolName))
+			}
+			// 继续监听，每 30 秒再提醒一次
+			toolProgressTimer.Reset(toolProgressTimeout)
 			continue
 		case <-idleCh:
 			slog.Error("agent session idle timeout: no events for too long, killing session",
@@ -181,8 +214,15 @@ func (e *Engine) processInteractiveEvents(state *interactiveState, session *Sess
 					e.send(p, replyCtx, chunk)
 				}
 			}
+			// 启动工具进度心跳计时器（30s 后提醒用户工具仍在执行）
+			currentToolName = event.ToolName
+			stopToolProgress()
+			toolProgressTimer = time.NewTimer(toolProgressTimeout)
+			toolProgressCh = toolProgressTimer.C
 
 		case EventToolResult:
+			// 工具执行完成，停止进度心跳
+			stopToolProgress()
 			if !quiet && e.showToolProcess {
 				out := strings.TrimSpace(event.Content)
 				if out == "" {
@@ -589,6 +629,12 @@ channelClosed:
 	slog.Warn("agent process exited", "session_key", sessionKey)
 	e.notifyDroppedQueuedMessages(state, fmt.Errorf("agent process exited"))
 	e.cleanupInteractiveState(sessionKey, state)
+
+	// 通知用户 agent 进程意外退出，并提示可以继续发消息（下次会自动重建 session）
+	state.mu.Lock()
+	crashP := state.platform
+	state.mu.Unlock()
+	e.send(crashP, replyCtx, e.i18n.T(MsgAgentCrashed))
 
 	if len(textParts) > 0 {
 		state.mu.Lock()
